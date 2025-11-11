@@ -5,7 +5,7 @@ namespace Clay_cs;
 public unsafe partial struct Clay_String
 {
     public bool isStaticallyAllocated;
-    
+
     [NativeTypeName("int32_t")]
     public int length;
 
@@ -91,6 +91,17 @@ public unsafe partial struct Clay_String
         public Clay_String stringId;
     }
 
+    public unsafe partial struct Clay_ElementIdArray
+    {
+        [NativeTypeName("int32_t")]
+        public int capacity;
+
+        [NativeTypeName("int32_t")]
+        public int length;
+
+        public Clay_ElementId* internalArray;
+    }
+
     public partial struct Clay_CornerRadius
     {
         public float topLeft;
@@ -150,7 +161,7 @@ public unsafe partial struct Clay_String
 
     public partial struct Clay_SizingAxis
     {
-        [NativeTypeName("__AnonymousRecord_clay_L288_C5")]
+        [NativeTypeName("__AnonymousRecord_clay_L315_C5")]
         public ClaySizingUnion size;
 
         public Clay__SizingType type;
@@ -221,7 +232,7 @@ public unsafe partial struct Clay_String
     public unsafe partial struct Clay_TextElementConfig
     {
         public void* userData;
-        
+
         public Clay_Color textColor;
 
         [NativeTypeName("uint16_t")]
@@ -246,11 +257,14 @@ public unsafe partial struct Clay_String
         public float aspectRatio;
     }
 
+    public partial struct Clay__Clay_AspectRatioElementConfigWrapper
+    {
+        public Clay_AspectRatioElementConfig wrapped;
+    }
+
     public unsafe partial struct Clay_ImageElementConfig
     {
         public void* imageData;
-
-        public Clay_Dimensions sourceDimensions;
     }
 
     [NativeTypeName("uint8_t")]
@@ -290,7 +304,8 @@ public unsafe partial struct Clay_String
         CLAY_ATTACH_TO_ROOT,
     }
 
-    public enum Clay_FloatingClipToElement: byte
+    [NativeTypeName("uint8_t")]
+    public enum Clay_FloatingClipToElement : byte
     {
         CLAY_CLIP_TO_NONE,
         CLAY_CLIP_TO_ATTACHED_PARENT,
@@ -325,8 +340,15 @@ public unsafe partial struct Clay_String
     public partial struct Clay_ClipElementConfig
     {
         public bool horizontal;
+
         public bool vertical;
+
         public Clay_Vector2 childOffset;
+    }
+
+    public partial struct Clay__Clay_ClipElementConfigWrapper
+    {
+        public Clay_ClipElementConfig wrapped;
     }
 
     public partial struct Clay_BorderWidth
@@ -398,7 +420,7 @@ public unsafe partial struct Clay_String
         public void* customData;
     }
 
-    public partial struct Clay_ClipRenderData
+    public partial struct Clay_ScrollRenderData
     {
         public bool horizontal;
 
@@ -433,7 +455,8 @@ public unsafe partial struct Clay_String
         public Clay_BorderRenderData border;
 
         [FieldOffset(0)]
-        public Clay_ClipRenderData clip;
+        [NativeTypeName("Clay_ClipRenderData")]
+        public Clay_ScrollRenderData clip;
     }
 
     public unsafe partial struct Clay_ScrollContainerData
@@ -575,12 +598,17 @@ public unsafe partial struct Clay_String
 
     internal static unsafe partial class ClayInterop
     {
+        public static void Clay__SuppressUnusedLatchDefinitionVariableWarning()
+        {
+            (void)(CLAY__ELEMENT_DEFINITION_LATCH);
+        }
+
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("uint32_t")]
         public static extern uint Clay_MinMemorySize();
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern Clay_Arena Clay_CreateArenaWithCapacityAndMemory([NativeTypeName("uint32_t")] uint capacity, void* memory);
+        public static extern Clay_Arena Clay_CreateArenaWithCapacityAndMemory([NativeTypeName("size_t")] nuint capacity, void* memory);
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void Clay_SetPointerState(Clay_Vector2 position, bool pointerDown);
@@ -598,7 +626,7 @@ public unsafe partial struct Clay_String
         public static extern void Clay_UpdateScrollContainers(bool enableDragScrolling, Clay_Vector2 scrollDelta, float deltaTime);
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void Clay_GetScrollOffset(Clay_Dimensions dimensions);
+        public static extern Clay_Vector2 Clay_GetScrollOffset();
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void Clay_SetLayoutDimensions(Clay_Dimensions dimensions);
@@ -626,6 +654,9 @@ public unsafe partial struct Clay_String
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern bool Clay_PointerOver(Clay_ElementId elementId);
+
+        [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern Clay_ElementIdArray Clay_GetPointerOverIds();
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern Clay_ScrollContainerData Clay_GetScrollContainerData(Clay_ElementId id);
@@ -670,6 +701,9 @@ public unsafe partial struct Clay_String
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void Clay__ConfigureOpenElement([NativeTypeName("const Clay_ElementDeclaration")] Clay_ElementDeclaration config);
+
+        [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void Clay__ConfigureOpenElementPtr([NativeTypeName("const Clay_ElementDeclaration *")] Clay_ElementDeclaration* config);
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void Clay__CloseElement();
