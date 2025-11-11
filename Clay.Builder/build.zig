@@ -8,7 +8,9 @@ const TargetData = struct {
 };
 
 const TARGETS = [_]TargetData{
-    .{ .target = .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .gnu }, .as_dll = true },
+    .{ .target = .{ .cpu_arch = .x86_64, .os_tag = .windows }, .as_dll = true },
+    .{ .target = .{ .cpu_arch = .x86_64, .os_tag = .windows }, .as_dll = false },
+    // .{ .target = .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .gnu }, .as_dll = true },
     .{ .target = .{ .cpu_arch = .x86_64, .os_tag = .linux, .abi = .gnu }, .as_dll = false },
 };
 
@@ -55,7 +57,7 @@ pub fn build(b: *std.Build) void {
         lib.addIncludePath(b.path("src/clay/clay.h"));
         lib.addCSourceFile(.{ .file = b.path("src/clay.c"), .flags = &flags });
         if (TARGETDATA.as_dll) {
-            // lib.defineCMacro("CLAY_DLL", "1");
+            lib.defineCMacro("CLAY_DLL", "1");
         }
 
         b.installArtifact(lib);

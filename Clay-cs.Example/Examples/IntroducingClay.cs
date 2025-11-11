@@ -267,7 +267,7 @@ public class IntroducingClay : IDisposable
 					using (Clay.Element(new()
 					{
 						id = Clay.Id(_clayString["MainContent"]),
-						scroll = new()
+						clip = new()
 						{
 							vertical = true
 						},

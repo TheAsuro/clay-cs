@@ -4,6 +4,8 @@ namespace Clay_cs;
 
 public unsafe partial struct Clay_String
 {
+    public bool isStaticallyAllocated;
+    
     [NativeTypeName("int32_t")]
     public int length;
 
@@ -216,8 +218,10 @@ public unsafe partial struct Clay_String
         CLAY_TEXT_ALIGN_RIGHT,
     }
 
-    public partial struct Clay_TextElementConfig
+    public unsafe partial struct Clay_TextElementConfig
     {
+        public void* userData;
+        
         public Clay_Color textColor;
 
         [NativeTypeName("uint16_t")]
@@ -235,8 +239,11 @@ public unsafe partial struct Clay_String
         public Clay_TextElementConfigWrapMode wrapMode;
 
         public Clay_TextAlignment textAlignment;
+    }
 
-        public bool hashStringContents;
+    public partial struct Clay_AspectRatioElementConfig
+    {
+        public float aspectRatio;
     }
 
     public unsafe partial struct Clay_ImageElementConfig
@@ -283,6 +290,12 @@ public unsafe partial struct Clay_String
         CLAY_ATTACH_TO_ROOT,
     }
 
+    public enum Clay_FloatingClipToElement: byte
+    {
+        CLAY_CLIP_TO_NONE,
+        CLAY_CLIP_TO_ATTACHED_PARENT,
+    }
+
     public partial struct Clay_FloatingElementConfig
     {
         public Clay_Vector2 offset;
@@ -300,6 +313,8 @@ public unsafe partial struct Clay_String
         public Clay_PointerCaptureMode pointerCaptureMode;
 
         public Clay_FloatingAttachToElement attachTo;
+
+        public Clay_FloatingClipToElement clipTo;
     }
 
     public unsafe partial struct Clay_CustomElementConfig
@@ -307,11 +322,11 @@ public unsafe partial struct Clay_String
         public void* customData;
     }
 
-    public partial struct Clay_ScrollElementConfig
+    public partial struct Clay_ClipElementConfig
     {
         public bool horizontal;
-
         public bool vertical;
+        public Clay_Vector2 childOffset;
     }
 
     public partial struct Clay_BorderWidth
@@ -371,8 +386,6 @@ public unsafe partial struct Clay_String
 
         public Clay_CornerRadius cornerRadius;
 
-        public Clay_Dimensions sourceDimensions;
-
         public void* imageData;
     }
 
@@ -385,7 +398,7 @@ public unsafe partial struct Clay_String
         public void* customData;
     }
 
-    public partial struct Clay_ScrollRenderData
+    public partial struct Clay_ClipRenderData
     {
         public bool horizontal;
 
@@ -420,7 +433,7 @@ public unsafe partial struct Clay_String
         public Clay_BorderRenderData border;
 
         [FieldOffset(0)]
-        public Clay_ScrollRenderData scroll;
+        public Clay_ClipRenderData clip;
     }
 
     public unsafe partial struct Clay_ScrollContainerData
@@ -431,7 +444,7 @@ public unsafe partial struct Clay_String
 
         public Clay_Dimensions contentDimensions;
 
-        public Clay_ScrollElementConfig config;
+        public Clay_ClipElementConfig config;
 
         public bool found;
     }
@@ -510,13 +523,15 @@ public unsafe partial struct Clay_String
 
         public Clay_CornerRadius cornerRadius;
 
+        public Clay_AspectRatioElementConfig aspectRatio;
+
         public Clay_ImageElementConfig image;
 
         public Clay_FloatingElementConfig floating;
 
         public Clay_CustomElementConfig custom;
 
-        public Clay_ScrollElementConfig scroll;
+        public Clay_ClipElementConfig clip;
 
         public Clay_BorderElementConfig border;
 
@@ -581,6 +596,9 @@ public unsafe partial struct Clay_String
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void Clay_UpdateScrollContainers(bool enableDragScrolling, Clay_Vector2 scrollDelta, float deltaTime);
+
+        [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void Clay_GetScrollOffset(Clay_Dimensions dimensions);
 
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void Clay_SetLayoutDimensions(Clay_Dimensions dimensions);
