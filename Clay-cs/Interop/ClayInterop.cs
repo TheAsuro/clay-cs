@@ -339,8 +339,10 @@ public unsafe partial struct Clay_String
 
     public partial struct Clay_ClipElementConfig
     {
+        [MarshalAs(UnmanagedType.U1)]
         public bool horizontal;
 
+        [MarshalAs(UnmanagedType.U1)]
         public bool vertical;
 
         public Clay_Vector2 childOffset;
@@ -420,10 +422,12 @@ public unsafe partial struct Clay_String
         public void* customData;
     }
 
-    public partial struct Clay_ScrollRenderData
+    public partial struct Clay_ClipRenderData
     {
+        [MarshalAs(UnmanagedType.U1)]
         public bool horizontal;
 
+        [MarshalAs(UnmanagedType.U1)]
         public bool vertical;
     }
 
@@ -455,8 +459,7 @@ public unsafe partial struct Clay_String
         public Clay_BorderRenderData border;
 
         [FieldOffset(0)]
-        [NativeTypeName("Clay_ClipRenderData")]
-        public Clay_ScrollRenderData clip;
+        public Clay_ClipRenderData clip;
     }
 
     public unsafe partial struct Clay_ScrollContainerData
@@ -469,6 +472,7 @@ public unsafe partial struct Clay_String
 
         public Clay_ClipElementConfig config;
 
+        [MarshalAs(UnmanagedType.U1)]
         public bool found;
     }
 
@@ -476,6 +480,7 @@ public unsafe partial struct Clay_String
     {
         public Clay_BoundingBox boundingBox;
 
+        [MarshalAs(UnmanagedType.U1)]
         public bool found;
     }
 
@@ -598,11 +603,6 @@ public unsafe partial struct Clay_String
 
     internal static unsafe partial class ClayInterop
     {
-        public static void Clay__SuppressUnusedLatchDefinitionVariableWarning()
-        {
-            (void)(CLAY__ELEMENT_DEFINITION_LATCH);
-        }
-
         [DllImport("Clay", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("uint32_t")]
         public static extern uint Clay_MinMemorySize();
